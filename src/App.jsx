@@ -5,9 +5,7 @@ import React, { useEffect, useState } from 'react';
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator} from '@chatscope/chat-ui-kit-react';
 
-// const API_KEY = "sk-proj-E8io2OJ52Mlzo0NKijtNT3BlbkFJKCEXG1L3Z6Gdx2iZbHVL";
-
-
+const API_KEY = "sk-proj-E8io2OJ52Mlzo0NKijtNT3BlbkFJKCEXG1L3Z6Gdx2iZbHVL";
 
 
 function App() {
@@ -40,42 +38,53 @@ function App() {
     await processMessageToChatGPT(newMessages);
   }
 
+  // Process Messages with ChatGTP AI
   async function processMessageToChatGPT(chatMessages){
 
+    // chat messages formatted for api
+    // role: "user" => a message from the user 
+    // role: "assistant" => a response from ChatGPT
+    // role: "system" => generally one initial message defining how we want ChatGPT to talk
+    
     let apiMessages =  chatMessages.map((messageObject) => { 
       let role = "";
-      if(messageObject.sender === "ChatGPT"){
+      if(messageObject.sender === "ChatGPT") {
         role = "assistant"
       } else {
           role = "user"
       }
-      return { role: role, content: messageObject.message}
+      return { role: role, content: messageObject.message }
     });
 
     const systemMessage = { 
       role: "system",
       content: "Explain all concepts like I am 10 years old."
+      //speak like a pirate, Explain like I am a 10 years of experience software engineer
     }
     
     const apiRequestBody = { 
        "model": "gpt-3.5-turbo",
+
+       // all different messages in our conversation
        "messages": [
-        systemMessage,
-        ...apiMessages
+          systemMessage,
+          ...apiMessages
       ]
     }
 
-    await fetch("https://api.openai.com/v1/chat/completions", { 
-      method: "POST",
-      headers: {
-         "Authorization" : "Bearer " + API_KEY,
-         "Content-Type" : "application/json"
-      },
-      body: JSON.stringify(apiRequestBody)
+    await fetch("https://api.openai.com/v1/chat/completions", 
+      { 
+        method: "POST",       //posting messages to API
+        headers: {
+          "Authorization" : "Bearer " + API_KEY,
+          "Content-Type" : "application/json"
+        },
+        body: JSON.stringify(apiRequestBody)
+      }
+    ).then((data) =>{ 
+      return data.json(); //return data in json format from Open AI API
     }).then((data) =>{
-      return data.json();
-    }).then((data) =>{
-      console.log(data);
+      console.log(data); 
       console.log(data.choices[0].message.content);
       setMessages(
         [...chatMessages, {
