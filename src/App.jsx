@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator} from '@chatscope/chat-ui-kit-react';
 
+// API key from Open AI
 const API_KEY = "sk-proj-W1zIiR6ekfmlWHsxwLjLT3BlbkFJjYdGLovExENi3xj7RPhv";
 
 function App() {
